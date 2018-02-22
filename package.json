@@ -1,0 +1,23 @@
+{
+  "name": "qunit-test-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node ./test/index.js"
+  },
+  "keywords": [
+    "cookie",
+    "qunit",
+    "test"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "node-qunit-phantomjs": "^2.0.0",
+    "qunitjs": "^2.4.1"
+  }
+}

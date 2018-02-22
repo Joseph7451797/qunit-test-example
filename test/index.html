@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JavaScript Cookie Test Suite</title>
+        <link href="../node_modules/qunitjs/qunit/qunit.css" rel="stylesheet">
+        <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+        <script src="tests.js"></script>
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+
+        <script>
+            // mock
+            var cookiedomain = 'localhost';
+            var cookiepath = '/';
+            var cookiepre = 'test_'
+
+            // borrowed from main project
+            function setcookie(cookieName, cookieValue, seconds, path, domain, secure, noprefix) {
+                if(cookieValue == '' || seconds < 0) {
+                    cookieValue = '';
+                    seconds = -2592000;
+                }
+                if(noprefix) {
+                    cookiepre = '';
+                }
+                if(seconds) {
+                    var expires = new Date();
+                    expires.setTime(expires.getTime() + seconds * 1000);
+                }
+                domain = !domain ? cookiedomain : domain;
+                path = !path ? cookiepath : path;
+                document.cookie = escape(cookiepre + cookieName) + '=' + escape(cookieValue)
+                    + (expires ? '; expires=' + expires.toGMTString() : '')
+                    + (path ? '; path=' + path : '/')
+                    + (domain ? '; domain=' + domain : '')
+                    + (secure ? '; secure' : '');
+            }
+
+            // function to test
+            function getcookie(name, nounescape, noprefix) {
+                // var name = noprefix ? name : cookiepre + name;
+                var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                if ( match ) {
+                    return !nounescape ? unescape(match[2]) : match[2];
+                } else {
+                    return '';
+                }
+            }
+
+            QUnit.test('Test Simple Value', function (assert) {
+                assert.expect(1);
+                document.cookie = 'a=v';
+                assert.strictEqual(getcookie('a'), 'v', 'should return value');
+            });
+
+            QUnit.test('Test Empty Value', function (assert) {
+                assert.expect(1);
+                // IE saves cookies with empty string as "c; ", e.g. without "=" as opposed to EOMB, which
+                // resulted in a bug while reading such a cookie.
+                setcookie('b', '');
+                assert.strictEqual(getcookie('b'), '', 'should return value');
+            });
+        </script>
+    </body>
+</html>
